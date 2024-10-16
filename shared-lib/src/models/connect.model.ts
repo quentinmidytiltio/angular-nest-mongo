@@ -1,7 +1,11 @@
 import { User } from "./user.model"
+import { ApiProperty } from '@nestjs/swagger';
 
 export class LoginCredentials {
+    @ApiProperty()
     username: string
+
+    @ApiProperty()
     password: string
 
     constructor(email: string, password: string) {
@@ -11,8 +15,13 @@ export class LoginCredentials {
 }
 
 export class RegisterCredentials {
+    @ApiProperty()
     email: string
+
+    @ApiProperty()
     username: string
+
+    @ApiProperty()
     password: string
 
     constructor(email: string, password: string) {
