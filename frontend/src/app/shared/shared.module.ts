@@ -94,6 +94,8 @@ import { TreeTableModule } from 'primeng/treetable';
 import { TriStateCheckboxModule } from 'primeng/tristatecheckbox';
 import { VirtualScrollerModule } from 'primeng/virtualscroller';
 
+import { LeafletModule } from '@asymmetrik/ngx-leaflet';
+
 @NgModule({
     imports: [
         AvatarModule,
@@ -188,7 +190,8 @@ import { VirtualScrollerModule } from 'primeng/virtualscroller';
         ConfirmPopupModule,
         KeyFilterModule,
         InputTextModule,
-        FormsModule
+        FormsModule,
+        LeafletModule
     ],
     exports: [
         AvatarModule,
@@ -284,6 +287,7 @@ import { VirtualScrollerModule } from 'primeng/virtualscroller';
         KeyFilterModule,
         InputTextModule,
         FormsModule,
+        LeafletModule
     ],
     declarations: [
 

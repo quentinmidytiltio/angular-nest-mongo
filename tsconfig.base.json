@@ -10,24 +10,14 @@
     "importHelpers": true,
     "target": "es2015",
     "module": "esnext",
-    "lib": [
-      "es2020",
-      "dom"
-    ],
+    "lib": ["es2020", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@angular-nest-mongo/shared-lib": [
-        "shared-lib/src/index.ts"
-      ],
-      "@shared": [
-        "frontend/src/app/shared/index"
-      ],
+      "@angular-nest-mongo/shared-lib": ["shared-lib/src/index.ts"],
+      "@shared": ["frontend/src/app/shared/index"]
     }
   },
-  "exclude": [
-    "node_modules",
-    "tmp"
-  ]
+  "exclude": ["node_modules", "tmp"]
 }
