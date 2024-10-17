@@ -1,0 +1,33 @@
+<div class="flex flex-column h-screen min-h-screen justify-content-center align-items-center bg-parfumerie-privee">
+  <img src="https://cdn-dgldodd.nitrocdn.com/cCTmGgqVeDYTDOILoFIceThUCeIBNxeL/assets/images/optimized/rev-9d0b5f6/webtech.institute/wp-content/uploads/2021/03/WebTech_Institute-logotype-dark-20-CS6-1.png"
+       class="max-w-30rem" />
+
+  <div class="flex flex-column"
+       (keydown.enter)="login()">
+    <span class="p-input-icon-left mt-5 mb-2">
+      <i class="pi pi-user"></i>
+      <input type="text"
+             class="h-3rem"
+             pInputText
+             [(ngModel)]="identifier"
+             placeholder="Identifiant"
+             id="signin_identifier" />
+    </span>
+
+    <span class="p-input-icon-left my-2">
+      <i class="pi pi-key"></i>
+      <p-password [toggleMask]="true"
+                  class="h-3rem"
+                  [feedback]="false"
+                  [(ngModel)]="password"
+                  placeholder="Mot de passe"
+                  id="signin_password" />
+    </span>
+  </div>
+
+  <div class="my-6">
+    <p-button styleClass="p-button-help"
+              (onClick)="login()"
+              id="signin_login">Se Connecter</p-button>
+  </div>
+</div>
