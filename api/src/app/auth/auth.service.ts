@@ -21,13 +21,6 @@ export class AuthService {
     async create(registerCredentials: RegisterCredentials): Promise<UserDBO> {
         console.log(registerCredentials)
 
-        // Splitting credentials into user and password
-        const user = {
-            email: registerCredentials.email.toLowerCase()
-        } as User
-
-        const password = registerCredentials.password
-
         // Initiate Transaction
         const transactionSession = await this.connection.startSession();
         transactionSession.startTransaction();
@@ -35,9 +28,7 @@ export class AuthService {
         try {
 
             // TODO EXERCISE : Check if a user is already in the database
-            const userDbo = await this.userModel.exists({
-                email: user.email,
-            });
+            const userDbo = null
 
             console.log(userDbo)
 
@@ -46,12 +37,20 @@ export class AuthService {
                 throw new HttpException(AuthError.userAlreadyExisting, HttpStatus.FORBIDDEN)
             } else {
 
-                // Generate hash for creation
-                const saltOrRounds = 10;
-                const hash = await bcrypt.hash(password, saltOrRounds);
+                // TODO MORE : Crypt Password - Generate hash for creation
+                /*const saltOrRounds = 10;
+                const hash = await bcrypt.hash(password, saltOrRounds);*/
 
-                // TODO EXERCISE : Create UserDbo
-                const createdCat = new this.userModel(toUserDbo(user, hash));
+                // TODO EXERCISE : insert the good object
+                // Look at UserDbo class
+                // Create UserDbo
+                const createdCat = new this.userModel({
+                    email: "quentin.midy@tiltio.fr",
+                    firstname: "Quentin",
+                    lastname: "Midy",
+                    hashedPassword: "P@ssword123"
+                });
+
                 const result = createdCat.save();
 
                 await transactionSession.commitTransaction();
@@ -75,22 +74,20 @@ export class AuthService {
         };
     }
 
-    async validateUser(email: string, password: string): Promise<User> {
+    async validateUser(userEmail: string, password: string): Promise<User> {
 
         // Initiate Transaction
         const transactionSession = await this.connection.startSession();
         transactionSession.startTransaction();
 
         try {
-            // TODO EXERCISE :  Match user by email
-            const userDbo = await this.userModel.findOne({
-                email: email,
-            });
+            // TODO EXERCISE :  Retrieve the user in the db from his email
+            const userDbo = await this.userModel.findOne({});
 
             console.log(userDbo)
             console.log(password)
 
-            const isMatch = await bcrypt.compare(password, userDbo.hashedPassword);
+            const isMatch = password == userDbo.hashedPassword;
 
             if (isMatch) {
                 const user = toUser(userDbo)
