@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { LocationDBO } from '../database/schemas/location.schema';
 import { Connection, Model } from 'mongoose';
-import { Location, User } from '@angular-nest-mongo/shared-lib'
+import { Location, LocationSearchByDistance, User } from '@angular-nest-mongo/shared-lib'
 import { toLocationDbo } from './assembler/location.assembler';
 import { toUserDbo } from '../auth/assembler/user.assembler';
 import { UserDBO } from '../database';
@@ -83,6 +83,38 @@ export class LocationService {
             await transactionSession.commitTransaction();
 
             return userLocations;
+        } catch (err) {
+            await transactionSession.abortTransaction();
+            throw err;
+        } finally {
+            await transactionSession.endSession();
+        }
+    }
+
+    async getAllByDistance(query: LocationSearchByDistance) {
+        // Initiate Transaction
+        const transactionSession = await this.connection.startSession();
+        transactionSession.startTransaction();
+
+        try {
+            // TODO EXERCISE : Get All Locations
+            const allLocations = this.locationModel.find(
+                {
+                    coordinates: {
+                        $near: {
+                            $geometry: {
+                                type: "Point",
+                                coordinates: [query.lng, query.lat],
+                            },
+                            $maxDistance: query.distance,
+                        },
+                    },
+                }
+            )
+
+            await transactionSession.commitTransaction();
+
+            return allLocations;
         } catch (err) {
             await transactionSession.abortTransaction();
             throw err;

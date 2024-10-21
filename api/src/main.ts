@@ -20,7 +20,6 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('API Documentation')
     .addTag('auth')
-    .addTag('geocode')
     .addBearerAuth()
     .build();
 

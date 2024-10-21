@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import * as Leaflet from 'leaflet';
+import { LocationService } from 'frontend/src/app/shared/services/location.service';
+import { Location } from '@angular-nest-mongo/shared-lib';
 
 Leaflet.Icon.Default.imagePath = 'assets/';
 
@@ -12,6 +14,7 @@ Leaflet.Icon.Default.imagePath = 'assets/';
 export class MapComponent {
   map!: Leaflet.Map;
   markers: Leaflet.Marker[] = [];
+  locations: Location[] = [];
   options = {
     layers: [
       Leaflet.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -22,32 +25,28 @@ export class MapComponent {
     center: { lat: 28.626137, lng: 79.821603 }
   }
 
+  /**
+   *
+   */
+  constructor(private locationService: LocationService) {
+    this.locationService.getMyLocations().subscribe(locations => {
+      this.locations = locations
+      this.initMarkers()
+    })
+  }
+
   initMarkers() {
-    const initialMarkers = [
-      {
-        position: { lat: 28.625485, lng: 79.821091 },
-        draggable: true
-      },
-      {
-        position: { lat: 28.625293, lng: 79.817926 },
-        draggable: false
-      },
-      {
-        position: { lat: 28.625182, lng: 79.81464 },
-        draggable: true
-      }
-    ];
-    for (let index = 0; index < initialMarkers.length; index++) {
-      const data = initialMarkers[index];
+    for (let index = 0; index < this.locations.length; index++) {
+      const data = this.locations[index];
       const marker = this.generateMarker(data, index);
-      marker.addTo(this.map).bindPopup(`<b>${data.position.lat},  ${data.position.lng}</b>`);
-      this.map.panTo(data.position);
+      marker.addTo(this.map).bindPopup(`<b>${data.coordinates[0]},  ${data.coordinates[1]}</b>`);
+      this.map.panTo({ lat: data.coordinates[0], lng: data.coordinates[1] });
       this.markers.push(marker)
     }
   }
 
-  generateMarker(data: any, index: number) {
-    return Leaflet.marker(data.position, { draggable: data.draggable })
+  generateMarker(data: Location, index: number) {
+    return Leaflet.marker({ lat: data.coordinates[0], lng: data.coordinates[1] }, { draggable: true })
       .on('click', (event: any) => this.markerClicked(event, index))
       .on('dragend', (event: any) => this.markerDragEnd(event, index));
   }

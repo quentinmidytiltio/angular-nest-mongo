@@ -11,7 +11,7 @@ export class LocationDBO {
     @Prop()
     title: string;
 
-    @Prop({ index: '2d' })
+    @Prop({ index: '2dsphere' })
     coordinates: number[];
 
     @Prop({ type: mongoose.Schema.Types.ObjectId, ref: UserDBO.name })

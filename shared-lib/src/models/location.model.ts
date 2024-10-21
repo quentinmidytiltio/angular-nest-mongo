@@ -7,3 +7,14 @@ export class Location {
     @ApiProperty()
     coordinates!: number[]
 }
+
+export class LocationSearchByDistance {
+    @ApiProperty()
+    distance!: number
+
+    @ApiProperty()
+    lat!: number
+
+    @ApiProperty()
+    lng!: number
+}
