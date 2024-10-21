@@ -29,7 +29,19 @@ export class MapComponent {
    *
    */
   constructor(private locationService: LocationService) {
-    this.locationService.getMyLocations().subscribe(locations => {
+    // Search Location by Distance
+    this.locationService.searchAllLocationsByDistance({
+      lat: -0.56667,
+      lng: 44.833328,
+      distance: 10000
+    }).subscribe(locations => {
+
+      // Search All Locations in the db
+      //this.locationService.getAllLocations().subscribe(locations => {
+
+      // Search only current user location
+      //this.locationService.getMyLocations().subscribe(locations => {
+
       this.locations = locations
       this.initMarkers()
     })

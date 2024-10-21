@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Location, User } from '@angular-nest-mongo/shared-lib';
+import { Location, LocationSearchByDistance, User } from '@angular-nest-mongo/shared-lib';
 import { BehaviorSubject, map, Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { AuthService } from './auth.service';
@@ -17,6 +17,12 @@ export class LocationService {
     getAllLocations(): Observable<Location[]> {
         return this.httpClient.get<Location[]>(
             `${environment.api}/location`
+        );
+    }
+
+    searchAllLocationsByDistance(query: LocationSearchByDistance): Observable<Location[]> {
+        return this.httpClient.post<Location[]>(
+            `${environment.api}/location/byDistance`, query
         );
     }
 
