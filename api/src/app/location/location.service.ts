@@ -25,15 +25,11 @@ export class LocationService {
 
         try {
             // TODO EXERCISE : Create Location
-            const createdCat = new this.locationModel(toLocationDbo(location));
+            const createdCat = new this.locationModel();
 
             // TODO EXERCISE : Add Location to the current user
             if (user) {
-                const userDbo = await this.userModel.findOne({
-                    email: user.email,
-                });
-
-                createdCat.owner = userDbo
+                ///
             }
 
             const result = createdCat.save();
@@ -99,17 +95,7 @@ export class LocationService {
         try {
             // TODO EXERCISE : Get All Locations
             const allLocations = this.locationModel.find(
-                {
-                    coordinates: {
-                        $near: {
-                            $geometry: {
-                                type: "Point",
-                                coordinates: [query.lng, query.lat],
-                            },
-                            $maxDistance: query.distance,
-                        },
-                    },
-                }
+
             )
 
             await transactionSession.commitTransaction();
