@@ -18,7 +18,7 @@ export class AuthService {
         @InjectConnection() private readonly connection: Connection
     ) { }
 
-    async create(registerCredentials: RegisterCredentials): Promise<UserDBO> {
+    async create(registerCredentials: RegisterCredentials): Promise<User> {
         console.log(registerCredentials)
 
         // Initiate Transaction
@@ -51,11 +51,11 @@ export class AuthService {
                     hashedPassword: "P@ssword123"
                 });
 
-                const result = createdCat.save();
+                const result = await createdCat.save();
 
                 await transactionSession.commitTransaction();
 
-                return result;
+                return toUser(result);
             }
 
         } catch (err) {
@@ -95,6 +95,30 @@ export class AuthService {
             } else {
                 return null;
             }
+
+        } catch (err) {
+            await transactionSession.abortTransaction();
+            throw err;
+        } finally {
+            await transactionSession.endSession();
+        }
+    }
+
+    async query(): Promise<User[]> {
+        // Initiate Transaction
+        const transactionSession = await this.connection.startSession();
+        transactionSession.startTransaction();
+
+        try {
+            // TODO EXERCISE :  Change the query 
+            const usersDbo = await this.userModel.find({}).sort({
+                firstname: -1
+            });
+
+            console.log(usersDbo)
+
+            const users = usersDbo.map(userDbo => toUser(userDbo))
+            return users;
 
         } catch (err) {
             await transactionSession.abortTransaction();

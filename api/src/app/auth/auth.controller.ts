@@ -58,4 +58,10 @@ export class AuthController {
     async register(@Request() req, @Body() body: RegisterCredentials) {
         return this.authService.create(body)
     }
+
+    @Public()
+    @Get('query')
+    async query(@Request() req) {
+        return this.authService.query();
+    }
 }
