@@ -73,7 +73,6 @@ export class LocationService {
         try {
             // TODO EXERCISE : Get All Locations related to the current user
             const userLocations = this.locationModel.find({
-                owner: user.id
             })
 
             await transactionSession.commitTransaction();
