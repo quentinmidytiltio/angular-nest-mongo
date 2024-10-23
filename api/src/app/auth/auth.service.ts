@@ -44,12 +44,7 @@ export class AuthService {
                 // TODO EXERCISE : insert the good object
                 // Look at UserDbo class
                 // Create UserDbo
-                const createdCat = new this.userModel({
-                    email: "quentin.midy@tiltio.fr",
-                    firstname: "Quentin",
-                    lastname: "Midy",
-                    hashedPassword: "P@ssword123"
-                });
+                const createdCat = new this.userModel();
 
                 const result = await createdCat.save();
 
