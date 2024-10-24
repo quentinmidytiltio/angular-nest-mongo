@@ -98,23 +98,26 @@ export class LocationService {
 
         try {
             // TODO EXERCISE : Get All Locations
-            const allLocations = this.locationModel.find(
-                {
-                    coordinates: {
-                        $near: {
-                            $geometry: {
-                                type: "Point",
-                                coordinates: [query.lng, query.lat],
+            const allLocations = await this.locationModel
+                .find(
+                    {
+                        coordinates: {
+                            $near: {
+                                $geometry: {
+                                    type: "Point",
+                                    coordinates: [query.lng, query.lat],
+                                },
+                                $maxDistance: query.distance,
                             },
-                            $maxDistance: query.distance,
                         },
-                    },
-                }
-            )
+                    }
+                ).populate('owner')
+
+
 
             await transactionSession.commitTransaction();
 
-            return allLocations;
+            return allLocations
         } catch (err) {
             await transactionSession.abortTransaction();
             throw err;

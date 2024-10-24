@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import * as Leaflet from 'leaflet';
 import { LocationService } from 'frontend/src/app/shared/services/location.service';
-import { Location } from '@angular-nest-mongo/shared-lib';
+import { groupBy, Location, User } from '@angular-nest-mongo/shared-lib';
 
 Leaflet.Icon.Default.imagePath = 'assets/';
 
@@ -13,8 +13,9 @@ Leaflet.Icon.Default.imagePath = 'assets/';
 })
 export class MapComponent {
   map!: Leaflet.Map;
-  markers: Leaflet.Marker[] = [];
+  markers: Leaflet.CircleMarker[] = [];
   locations: Location[] = [];
+  locationsGroupedByOwner!: Map<any, any>;
   options = {
     layers: [
       Leaflet.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -33,7 +34,7 @@ export class MapComponent {
     this.locationService.searchAllLocationsByDistance({
       lat: -0.56667,
       lng: 44.833328,
-      distance: 10000
+      distance: 10000000
     }).subscribe(locations => {
 
       // Search All Locations in the db
@@ -43,29 +44,46 @@ export class MapComponent {
       //this.locationService.getMyLocations().subscribe(locations => {
 
       this.locations = locations
-      this.initMarkers()
+      this.locationsGroupedByOwner = groupBy(this.locations, location => location.owner)
+
+      console.log(this.locationsGroupedByOwner)
+
+      //this.initMarkers(this.locations)
+
+      this.initMarkersGroupedBy()
     })
   }
 
-  initMarkers() {
-    for (let index = 0; index < this.locations.length; index++) {
-      const data = this.locations[index];
-      const marker = this.generateMarker(data, index);
-      marker.addTo(this.map).bindPopup(`<b>${data.coordinates[0]},  ${data.coordinates[1]}</b>`);
+  initMarkers(locations: Location[], owner: User | null = null, color: string) {
+    for (let index = 0; index < locations.length; index++) {
+      const data = locations[index];
+      const marker = this.generateMarker(data, index, color);
+      marker.addTo(this.map).bindPopup(`<b>${data.coordinates[0]},  ${data.coordinates[1]} - ${owner?.email}</b>`);
       this.map.panTo({ lat: data.coordinates[0], lng: data.coordinates[1] });
       this.markers.push(marker)
     }
   }
 
-  generateMarker(data: Location, index: number) {
-    return Leaflet.marker({ lat: data.coordinates[0], lng: data.coordinates[1] }, { draggable: true })
+  initMarkersGroupedBy() {
+
+    let index = 0;
+    this.locationsGroupedByOwner.forEach((locations, owner) => {
+      const color = `#${index * 10 % 2}${index * 5 % 4}${index * 6 % 3}${index * 7 % 5}${index * 8 % 6}${index * 9 % 7}`
+      this.initMarkers(locations, owner, color)
+      index++
+    });
+  }
+
+  generateMarker(data: Location, index: number, color: string) {
+    const marker = Leaflet.circleMarker({ lat: data.coordinates[0], lng: data.coordinates[1] }, { radius: 20, color: color })
       .on('click', (event: any) => this.markerClicked(event, index))
       .on('dragend', (event: any) => this.markerDragEnd(event, index));
+
+    return marker
   }
 
   onMapReady($event: any) {
     this.map = $event;
-    this.initMarkers();
   }
 
   mapClicked($event: any) {

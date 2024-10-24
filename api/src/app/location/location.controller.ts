@@ -1,5 +1,5 @@
 import { Location, LocationSearchByDistance } from '@angular-nest-mongo/shared-lib';
-import { Body, Controller, Get, Post, Query, Request } from '@nestjs/common';
+import { Body, Controller, Get, Post, Response, Query, Request, Res } from '@nestjs/common';
 import { Public } from '../auth/auth.metadata';
 import { LocationService } from './location.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -49,7 +49,7 @@ export class LocationController {
     @Public()
     @Post('byDistance')
     async getAllLocationsWithinDistance(@Request() req, @Body() body: LocationSearchByDistance) {
-        return this.locationService.getAllByDistance(body)
+        return this.locationService.getAllByDistance(body);
     }
 
     /**
