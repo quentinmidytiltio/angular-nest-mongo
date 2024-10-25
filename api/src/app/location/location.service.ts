@@ -115,10 +115,36 @@ export class LocationService {
 
 
             // TODO EXERCISE : Make aggreggate
+            const allLocationsGroupedBy = await this.locationModel
+                .aggregate([
+                    {
+                        $geoNear: {
+                            near: { type: "Point", coordinates: [query.lng, query.lat] },
+                            distanceField: "distance",
+                            maxDistance: query.distance,
+                            spherical: true
+                        }
+                    },
+                    {
+                        $lookup: {
+                            from: "userdbos",
+                            localField: "owner",
+                            foreignField: "_id",
+                            as: "ownerpopulated"
+                        }
+                    },
+                    {
+                        $group: {
+                            _id: "$owner",
+                            locations: { $push: "$$ROOT" }
+                        }
+                    }
+                ])
 
             await transactionSession.commitTransaction();
 
-            return allLocations
+            //return allLocations
+            return allLocationsGroupedBy
         } catch (err) {
             await transactionSession.abortTransaction();
             throw err;

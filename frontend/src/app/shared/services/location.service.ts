@@ -20,7 +20,7 @@ export class LocationService {
         );
     }
 
-    searchAllLocationsByDistance(query: LocationSearchByDistance): Observable<Location[]> {
+    searchAllLocationsByDistance(query: LocationSearchByDistance) {
         return this.httpClient.post<Location[]>(
             `${environment.api}/location/byDistance`, query
         );

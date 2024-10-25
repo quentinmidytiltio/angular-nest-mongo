@@ -25,6 +25,7 @@ export class MapComponent {
     zoom: 16,
     center: { lat: 28.626137, lng: 79.821603 }
   }
+  colors = ['red', 'blue', 'green']
 
   /**
    *
@@ -44,7 +45,8 @@ export class MapComponent {
       //this.locationService.getMyLocations().subscribe(locations => {
 
       this.locations = locations
-      this.locationsGroupedByOwner = groupBy(this.locations, location => location.owner)
+      //this.locationsGroupedByOwner = groupBy(this.locations, location => location.owner ? location.owner._id : undefined)
+      this.locationsGroupedByOwner = locations as any
 
       console.log(this.locationsGroupedByOwner)
 
@@ -55,20 +57,24 @@ export class MapComponent {
   }
 
   initMarkers(locations: Location[], owner: User | null = null, color: string) {
+    console.log(locations)
     for (let index = 0; index < locations.length; index++) {
       const data = locations[index];
       const marker = this.generateMarker(data, index, color);
-      marker.addTo(this.map).bindPopup(`<b>${data.coordinates[0]},  ${data.coordinates[1]} - ${owner?.email}</b>`);
+      marker.addTo(this.map).bindPopup(`<b>${data.coordinates[0]},  ${data.coordinates[1]} - ${owner}</b>`);
       this.map.panTo({ lat: data.coordinates[0], lng: data.coordinates[1] });
       this.markers.push(marker)
     }
   }
 
   initMarkersGroupedBy() {
-
     let index = 0;
-    this.locationsGroupedByOwner.forEach((locations, owner) => {
-      const color = `#${index * 10 % 2}${index * 5 % 4}${index * 6 % 3}${index * 7 % 5}${index * 8 % 6}${index * 9 % 7}`
+    this.locationsGroupedByOwner.forEach((item) => {
+      const locations = item.locations
+      const owner = item._id
+      console.log(locations)
+      console.log(owner)
+      const color = this.colors[index % this.colors.length]
       this.initMarkers(locations, owner, color)
       index++
     });
