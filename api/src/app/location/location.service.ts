@@ -114,6 +114,7 @@ export class LocationService {
                 ).populate('owner')
 
 
+            // TODO EXERCISE : Make aggreggate
 
             await transactionSession.commitTransaction();
 
